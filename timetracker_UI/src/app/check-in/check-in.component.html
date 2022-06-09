@@ -1,0 +1,30 @@
+
+<div class="container mag-tp">
+ <p></p>
+<div class="col-12">
+  
+  <div class="col-sm-6 form-group mrg-bt">
+    <table>
+    <td><label class="control-label">User Name:</label></td>
+    <td><input type="text" class="form-control" id="txtProjName" [(ngModel)]="usersName" ></td>
+  </table>
+</div>
+
+    <div class="col-4">
+      <table>
+        <td>
+          <!-- <th></th> -->
+          <button *ngIf="usersName != ''" class="col-12 btn btn-primary mar" (click)="checkIn()"> Check In </button>
+        </td>
+        <td>
+          <button *ngIf="usersName != ''" class="col-12 btn btn-primary mar" (click)="checkOut()"> Check Out </button>
+        </td>
+        <td>
+          <button class="col-12 btn btn-primary mar" (click)="view()"> View </button>
+        </td>
+        </table>
+
+    </div>
+    <div class="col-4  mag-tp">{{response | json}}</div>
+</div>
+</div>
