@@ -11,7 +11,7 @@ export class BackendApiService {
   checkView = "api/v1/timesheet/shifts";
   baseURL: string;
   constructor(private http: HttpClient) {
-    this.baseURL = "http://localhost:8090/";
+    this.baseURL = "http://localhost:8080/";
    }
 
   public getHeaders(usersName: string): HttpHeaders{
@@ -24,19 +24,19 @@ export class BackendApiService {
   getCheckIn(usersName: string){
     return this.http.get(this.baseURL+this.checkIn, {headers: this.getHeaders(usersName)}).pipe(
       catchError(error => throwError(error))
-      
+
     ).toPromise();
   }
   getCheckOut(usersName: string){
     return this.http.get(this.baseURL+this.checkOut, {headers: this.getHeaders(usersName)}).pipe(
       catchError(error => throwError(error))
-      
+
     ).toPromise();
   }
   getView(usersName: string){
     return this.http.get(this.baseURL+this.checkView, {headers: this.getHeaders(usersName)}).pipe(
       catchError(error => throwError(error))
-      
+
     ).toPromise();
   }
 }

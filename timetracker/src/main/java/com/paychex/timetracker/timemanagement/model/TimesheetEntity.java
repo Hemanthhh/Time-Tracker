@@ -10,7 +10,6 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,14 +34,14 @@ public class TimesheetEntity {
     @Column(name = "START_TIME", nullable = false, updatable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "END_TIME", updatable = false)
+    @Column(name = "END_TIME")
     private LocalDateTime endTime;
 
-    @Column(name = "IS_ACTIVE", updatable = false)
+    @Column(name = "IS_ACTIVE")
     private Boolean isActive;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name="USER_ID", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
     private UserEntity userEntity;
 
 }

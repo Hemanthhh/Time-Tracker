@@ -12,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,11 +47,11 @@ public class UserEntity {
     private String userName;
 
     @CreationTimestamp
-    @Column(name = "CREATED_DATE",insertable = true,updatable = false)
+    @Column(name = "CREATED_DATE", updatable = false)
     private Timestamp createdDate;
 
     @UpdateTimestamp
-    @Column(name = "UPDATED_DATE",insertable = true,updatable = false)
+    @Column(name = "UPDATED_DATE")
     private Timestamp updatedDate;
 
     @Column(name = "CREATED_BY")
@@ -61,7 +60,7 @@ public class UserEntity {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="userEntity", orphanRemoval = true)
     private Set<TimesheetEntity> timeSheetEntitySet;
 
 }

@@ -41,7 +41,7 @@ public class TimesheetServices {
         TimesheetEntity timesheetEntity = TimesheetEntity.builder().userEntity(userEntity).startTime(LocalDateTime.now())
                 .isActive(true)
                 .build();
-        timesheetRepository.save(timesheetEntity);
+        saveTimesheet(timesheetEntity);
 
         return TimesheetResponse.builder().status("successfully checked-in").build();
     }
@@ -54,18 +54,20 @@ public class TimesheetServices {
         if(timesheetEntityOptional.isEmpty()) {
             throw new NoActiveShiftException("No active shift for the User!");
         }
-        updateEndShift(timesheetEntityOptional, userEntity);
+
+        TimesheetEntity timesheetEntity = timesheetEntityOptional.get();
+        timesheetEntity.setIsActive(false);
+        timesheetEntity.setEndTime(LocalDateTime.now());
+
+        saveTimesheet(timesheetEntity);
 
         return TimesheetResponse.builder().status("successfully checked-out").build();
     }
 
-    private void updateEndShift(Optional<TimesheetEntity> timesheetEntityOptional, UserEntity userEntity) {
-        TimesheetEntity timesheetEntity = timesheetEntityOptional.get();
-        timesheetEntity.setIsActive(false);
-        timesheetEntity.setEndTime(LocalDateTime.now());
-        timesheetEntity.setUserEntity(userEntity);
+    private void saveTimesheet(TimesheetEntity timesheetEntity) {
         timesheetRepository.save(timesheetEntity);
     }
+
 
     public List<Timesheet> getAllShiftRecordsByUserName(String userName) throws UserNotFoundException {
         List<Timesheet> timesheet = new ArrayList<>();
@@ -80,9 +82,23 @@ public class TimesheetServices {
         return timesheet;
     }
 
+    public Timesheet getLastActiveShift(String userName) throws UserNotFoundException, NoActiveShiftException {
+        Optional<UserEntity> userEntityOptional = getUserEntity(userName);
+        UserEntity userEntity = userEntityOptional.get();
+
+        Optional<TimesheetEntity> timesheetEntityOptional = getActiveShiftByUser(userEntity);
+        if(timesheetEntityOptional.isEmpty()) {
+            throw new NoActiveShiftException("No active shift for the User!");
+        }
+
+        return timeSheetConverter(timesheetEntityOptional.get());
+    }
+
     private Optional<TimesheetEntity> getActiveShiftByUser(UserEntity userEntity) {
-        return timesheetRepository.
-                findByUserEntityAndIsActive(userEntity, Boolean.TRUE);
+        if(userEntity.getTimeSheetEntitySet() == null || userEntity.getTimeSheetEntitySet().isEmpty()) {
+            return Optional.empty();
+        }
+        return userEntity.getTimeSheetEntitySet().stream().filter(user -> user.getIsActive()).findFirst();
     }
 
     private Timesheet timeSheetConverter(TimesheetEntity timesheetEntity) {
